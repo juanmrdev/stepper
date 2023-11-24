@@ -6,6 +6,8 @@ import android.view.LayoutInflater
 import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.DrawableCompat
 import com.example.stepperf.databinding.StepViewBinding
 import com.example.stepperf.databinding.ViewStepperBinding
 
@@ -53,6 +55,7 @@ class StepperView(
             it.onPendingFill()
             it.onClick(::validateStepStates)
         }
+        validateStepStates(FIRST_INDEX)
         steppersList.last().lastIndexDivider()
         steppersList.first().onFocus()
     }
@@ -85,31 +88,31 @@ class StepView(
     private val ordinal: Int
         get() = stepIconEnum.ordinal
 
+
     fun initIconStep(step: StepIconEnum) {
         stepIconEnum = step
         setDrawable(stepIconEnum.icon)
     }
 
     override fun onCompleted() {
-        setColor(stepIconEnum.defaultIconColor)
+        setColor(stepIconEnum.onCompleteIcon)
         setDrawable(onCompleteIcon)
     }
 
     override fun onFocus() {
-        binding.root.isEnabled = true
+        binding.stepDrawableTextView.isEnabled = true
         setColor(stepIconEnum.defaultIconColor)
         setDrawable(stepIconEnum.icon)
     }
 
     override fun onPendingFill() {
-        binding.root.isEnabled = false
+        binding.stepDrawableTextView.isEnabled = true
         setColor(stepIconEnum.defaultDisableColor)
         setDrawable(stepIconEnum.icon)
     }
 
     override fun onClick(block: (Int) -> Unit) {
-        if (isFocused) return
-        binding.root.setOnClickListener {
+        binding.stepDrawableTextView.setOnClickListener {
             block(ordinal)
         }
     }
@@ -120,6 +123,7 @@ class StepView(
 
     private fun setColor(@ColorInt color: Int) {
         binding.stepDrawableTextView.setTextColor(color)
+        DrawableCompat.setTint(ContextCompat.getDrawable(context, stepIconEnum.icon)!!, color)
         binding.divider.setBackgroundColor(color)
     }
 

@@ -2,13 +2,13 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="50dp"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:paddingVertical="20dp">
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/step_drawable_text_view"
-        style="@style/TextAppearance.AppCompat"
+        style="@style/TextAppearance.Label.StepperComplete"
         android:importantForAccessibility="no"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/divider"
@@ -17,8 +17,8 @@
 
     <View
         android:id="@+id/divider"
-        style="@style/Widget.Material3.MaterialDivider"
-        android:layout_width="0dp"
+        style="@style/SeparatorAppearance.Stepper"
+        android:layout_width="50dp"
         android:importantForAccessibility="no"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
