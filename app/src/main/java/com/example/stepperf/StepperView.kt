@@ -1,6 +1,7 @@
 package com.example.stepperf
 
 import android.content.Context
+import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.annotation.ColorInt
@@ -121,9 +122,18 @@ class StepView(
         binding.stepDrawableTextView.setCompoundDrawablesWithIntrinsicBounds(0, drawable, 0, 0)
     }
 
+    private fun setDrawable(drawable: Drawable) {
+        binding.stepDrawableTextView.setCompoundDrawablesWithIntrinsicBounds(null, drawable, null, null)
+    }
+
     private fun setColor(@ColorInt color: Int) {
+        val drawable: Drawable? = ContextCompat.getDrawable(context, stepIconEnum.icon)
         binding.stepDrawableTextView.setTextColor(color)
-        DrawableCompat.setTint(ContextCompat.getDrawable(context, stepIconEnum.icon)!!, color)
+        drawable?.run {
+            DrawableCompat.setTint(this, color)
+            setDrawable(this)
+        }
+
         binding.divider.setBackgroundColor(color)
     }
 
