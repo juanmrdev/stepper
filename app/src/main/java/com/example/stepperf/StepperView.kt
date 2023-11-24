@@ -68,13 +68,13 @@ class StepperView(
             stepView.onCompleted()
         }
 
-        steppersList.subList(currentIndex + 1, steppersList.lastIndex).forEach { stepView ->
-            stepView.onPendingFill()
+        if (currentIndex != steppersList.lastIndex) {
+            steppersList.subList(currentIndex + 1, steppersList.lastIndex).forEach { stepView ->
+                stepView.onPendingFill()
+            }
         }
     }
 }
-
-
 
 class StepView(
     context: Context,
@@ -133,6 +133,8 @@ class StepView(
             DrawableCompat.setTint(this, color)
             setDrawable(this)
         }
+
+        binding.root.setBackgroundColor(color)
 
         binding.divider.setBackgroundColor(color)
     }
