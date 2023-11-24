@@ -16,9 +16,7 @@ interface StepperViewController {
     fun initStepper(steps: List<StepIconEnum>)
 }
 
-class StepperViewControllerImpl: StepperViewController {
-
-    private lateinit var stepperView: StepperView
+class StepperViewControllerImpl(private val stepperView: StepperView): StepperViewController {
 
     override fun initStepper(steps: List<StepIconEnum>) {
         stepperView.initStepper(steps)
@@ -41,24 +39,25 @@ class StepperView(
 
     override fun initStepper(steps: List<StepIconEnum>) {
         steps.forEach { step ->
-            val stepView = StepView(context).apply {
+            StepView(context).apply {
                 initIconStep(step)
+                steppersList.add(this)
+                binding.container.addView(this)
             }
-            steppersList.add(stepView)
-            binding.container.addView(stepView)
         }
-
         initStep()
     }
 
     private fun initStep() {
-        steppersList.forEach {
-            it.onPendingFill()
-            it.onClick(::validateStepStates)
+        steppersList.apply {
+            forEach {
+                it.onPendingFill()
+                it.onClick(::validateStepStates)
+            }
+            validateStepStates(FIRST_INDEX)
+            last().lastIndexDivider()
+            first().onFocus()
         }
-        validateStepStates(FIRST_INDEX)
-        steppersList.last().lastIndexDivider()
-        steppersList.first().onFocus()
     }
 
     private fun validateStepStates(currentIndex: Int) {
@@ -83,12 +82,6 @@ class StepView(
 
     private val binding = StepViewBinding.inflate(LayoutInflater.from(context), this, true)
     private lateinit var stepIconEnum: StepIconEnum
-    private val onCompleteIcon: Int
-        get() = stepIconEnum.onCompleteIcon
-
-    private val ordinal: Int
-        get() = stepIconEnum.ordinal
-
 
     fun initIconStep(step: StepIconEnum) {
         stepIconEnum = step
@@ -97,7 +90,7 @@ class StepView(
 
     override fun onCompleted() {
         setColor(stepIconEnum.onCompleteIcon)
-        setDrawable(onCompleteIcon)
+        setDrawable(stepIconEnum.onCompleteIcon)
     }
 
     override fun onFocus() {
@@ -114,7 +107,7 @@ class StepView(
 
     override fun onClick(block: (Int) -> Unit) {
         binding.stepDrawableTextView.setOnClickListener {
-            block(ordinal)
+            block(stepIconEnum.ordinal)
         }
     }
 
@@ -127,15 +120,11 @@ class StepView(
     }
 
     private fun setColor(@ColorInt color: Int) {
-        val drawable: Drawable? = ContextCompat.getDrawable(context, stepIconEnum.icon)
-        binding.stepDrawableTextView.setTextColor(color)
-        drawable?.run {
-            DrawableCompat.setTint(this, color)
-            setDrawable(this)
+        ContextCompat.getDrawable(context, stepIconEnum.icon)?.let { drawable ->
+            DrawableCompat.setTint(drawable, color)
+            setDrawable(drawable)
         }
-
         binding.root.setBackgroundColor(color)
-
         binding.divider.setBackgroundColor(color)
     }
 
